@@ -148,22 +148,3 @@ En Windows
 gradlew.bat assembleDebug
 ```
 
-## Estado actual
-
-El proyecto cumple con lo pedido en el PDF
-
-- XML sin Compose
-- View Binding
-- RecyclerView
-- Material Components
-- Navigation Component con Fragments
-- ViewModel
-- LiveData y Flow
-- Room
-- Coroutines
-- AlarmManager
-- Notificaciones locales
-
-Hilt no se agrego porque era opcional
-
-En este proyecto se usa inyeccion manual creando la base de datos, el repositorio y el ViewModelFactory desde los Fragments
