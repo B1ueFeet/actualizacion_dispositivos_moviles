@@ -13,6 +13,13 @@ class FoodViewModel(
 ) : ViewModel() {
 
     val foods = repository.foods.asLiveData()
+    val foodTypes = repository.foodTypes.asLiveData()
+
+    fun seedDefaultTypes() {
+        viewModelScope.launch {
+            repository.seedDefaultTypes()
+        }
+    }
 
     fun addFood(food: Food, onSaved: (Food) -> Unit) {
         viewModelScope.launch {

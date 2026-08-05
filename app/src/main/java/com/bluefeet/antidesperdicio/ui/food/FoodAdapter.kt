@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bluefeet.antidesperdicio.R
 import com.bluefeet.antidesperdicio.data.local.Food
+import com.bluefeet.antidesperdicio.data.local.FoodWithType
 import com.bluefeet.antidesperdicio.databinding.ItemFoodBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -15,16 +16,16 @@ import java.util.concurrent.TimeUnit
 
 class FoodAdapter : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
-    private val foods = mutableListOf<Food>()
+    private val foods = mutableListOf<FoodWithType>()
 
-    fun submitList(newFoods: List<Food>) {
+    fun submitList(newFoods: List<FoodWithType>) {
         foods.clear()
         foods.addAll(newFoods)
         notifyDataSetChanged()
     }
 
     fun getFoodAt(position: Int): Food {
-        return foods[position]
+        return foods[position].food
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
@@ -46,13 +47,15 @@ class FoodAdapter : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
         private val binding: ItemFoodBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(food: Food) {
+        fun bind(foodWithType: FoodWithType) {
+            val food = foodWithType.food
             val daysLeft = calculateDaysLeft(food.expirationDate)
             val status = getStatus(daysLeft)
             val color = getStatusColor(daysLeft)
 
             binding.foodNameTextView.text = food.name
-            binding.expirationTextView.text = "Fecha de caducidad: ${formatDate(food.expirationDate)}"
+            binding.expirationTextView.text =
+                "${formatQuantity(food.quantity)} ${food.unit} · ${foodWithType.type.name} · Caduca: ${formatDate(food.expirationDate)}"
             binding.statusTextView.text = status
             binding.statusTextView.setTextColor(color)
             binding.foodCardView.strokeColor = color
@@ -100,6 +103,14 @@ class FoodAdapter : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
         private fun formatDate(dateMillis: Long): String {
             val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             return formatter.format(Date(dateMillis))
+        }
+
+        private fun formatQuantity(quantity: Double): String {
+            return if (quantity % 1.0 == 0.0) {
+                quantity.toInt().toString()
+            } else {
+                quantity.toString()
+            }
         }
     }
 }

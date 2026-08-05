@@ -5,21 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bluefeet.antidesperdicio.data.local.AppDatabase
 import com.bluefeet.antidesperdicio.data.local.Food
+import com.bluefeet.antidesperdicio.data.local.FoodType
 import com.bluefeet.antidesperdicio.data.repository.FoodRepository
 import com.bluefeet.antidesperdicio.databinding.FragmentAddFoodBinding
+import com.bluefeet.antidesperdicio.notification.ExpirationAlarmScheduler
 import com.bluefeet.antidesperdicio.ui.food.FoodViewModel
 import com.bluefeet.antidesperdicio.ui.food.FoodViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-
-import com.bluefeet.antidesperdicio.notification.ExpirationAlarmScheduler
 
 class AddFoodFragment : Fragment() {
 
@@ -28,9 +29,12 @@ class AddFoodFragment : Fragment() {
 
     private lateinit var viewModel: FoodViewModel
     private var selectedExpirationDate: Long? = null
-
     private var editingFoodId: Int? = null
+    private var editingTypeId: Int? = null
+    private var pendingTypeSelectionId: Int? = null
+    private var foodTypes: List<FoodType> = emptyList()
 
+    private val unitOptions = listOf("unidades", "kg", "g", "litros", "ml")
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     override fun onCreateView(
@@ -46,8 +50,9 @@ class AddFoodFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupViewModel()
+        setupUnitSpinner()
+        observeFoodTypes()
         setupClickListeners()
-
         loadFoodForEditingIfNeeded()
     }
 
@@ -57,6 +62,33 @@ class AddFoodFragment : Fragment() {
         val factory = FoodViewModelFactory(repository)
 
         viewModel = ViewModelProvider(this, factory)[FoodViewModel::class.java]
+        viewModel.seedDefaultTypes()
+    }
+
+    private fun setupUnitSpinner() {
+        binding.unitSpinner.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            unitOptions
+        )
+    }
+
+    private fun observeFoodTypes() {
+        viewModel.foodTypes.observe(viewLifecycleOwner) { types ->
+            foodTypes = types
+            binding.typeSpinner.adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                types.map { it.name }
+            )
+
+            val selectedId = pendingTypeSelectionId ?: editingTypeId
+            val selectedIndex = types.indexOfFirst { it.id == selectedId }
+            if (selectedIndex >= 0) {
+                binding.typeSpinner.setSelection(selectedIndex)
+                pendingTypeSelectionId = null
+            }
+        }
     }
 
     private fun setupClickListeners() {
@@ -86,16 +118,26 @@ class AddFoodFragment : Fragment() {
 
         val foodName = arguments?.getString("food_name").orEmpty()
         val expirationDate = arguments?.getLong("food_expiration_date") ?: return
+        val quantity = arguments?.getDouble("food_quantity", 0.0) ?: 0.0
+        val unit = arguments?.getString("food_unit").orEmpty()
+        val typeId = arguments?.getInt("food_type_id", 0) ?: 0
 
         editingFoodId = foodId
+        editingTypeId = typeId
+        pendingTypeSelectionId = typeId
         selectedExpirationDate = expirationDate
 
         binding.titleTextView.text = "Actualizar producto"
         binding.nameEditText.setText(foodName)
+        binding.quantityEditText.setText(formatQuantity(quantity))
         binding.dateEditText.setText(dateFormatter.format(expirationDate))
         binding.saveFoodButton.text = "Actualizar"
-    }
 
+        val unitIndex = unitOptions.indexOf(unit)
+        if (unitIndex >= 0) {
+            binding.unitSpinner.setSelection(unitIndex)
+        }
+    }
 
     private fun showDatePicker() {
         val calendar = Calendar.getInstance()
@@ -121,13 +163,28 @@ class AddFoodFragment : Fragment() {
 
     private fun saveFood() {
         val name = binding.nameEditText.text.toString().trim()
+        val quantity = binding.quantityEditText.text.toString().trim().replace(',', '.').toDoubleOrNull()
         val expirationDate = selectedExpirationDate
+        val selectedType = foodTypes.getOrNull(binding.typeSpinner.selectedItemPosition)
+        val unit = unitOptions.getOrNull(binding.unitSpinner.selectedItemPosition).orEmpty()
 
         if (name.isBlank()) {
             binding.nameInputLayout.error = "Ingresa el nombre"
             return
         } else {
             binding.nameInputLayout.error = null
+        }
+
+        if (quantity == null || quantity <= 0.0) {
+            binding.quantityInputLayout.error = "Ingresa una cantidad valida"
+            return
+        } else {
+            binding.quantityInputLayout.error = null
+        }
+
+        if (selectedType == null) {
+            Toast.makeText(requireContext(), "Selecciona un tipo", Toast.LENGTH_SHORT).show()
+            return
         }
 
         if (expirationDate == null) {
@@ -142,7 +199,10 @@ class AddFoodFragment : Fragment() {
         if (editingId == null) {
             val food = Food(
                 name = name,
-                expirationDate = expirationDate
+                expirationDate = expirationDate,
+                quantity = quantity,
+                unit = unit,
+                typeId = selectedType.id
             )
 
             viewModel.addFood(food) { savedFood ->
@@ -154,7 +214,10 @@ class AddFoodFragment : Fragment() {
             val food = Food(
                 id = editingId,
                 name = name,
-                expirationDate = expirationDate
+                expirationDate = expirationDate,
+                quantity = quantity,
+                unit = unit,
+                typeId = selectedType.id
             )
 
             ExpirationAlarmScheduler(requireContext()).cancel(food)
@@ -164,6 +227,14 @@ class AddFoodFragment : Fragment() {
                 Toast.makeText(requireContext(), "Alimento actualizado", Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             }
+        }
+    }
+
+    private fun formatQuantity(quantity: Double): String {
+        return if (quantity % 1.0 == 0.0) {
+            quantity.toInt().toString()
+        } else {
+            quantity.toString()
         }
     }
 

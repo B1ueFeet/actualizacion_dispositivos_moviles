@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="app_background">#FFF8EF</color>
+    <color name="app_background">#F6F7F7</color>
     <color name="app_surface">#FFFFFF</color>
-    <color name="app_surface_soft">#F6F1E8</color>
+    <color name="app_surface_soft">#EEF7F3</color>
 
-    <color name="app_primary">#7BAE7F</color>
-    <color name="app_primary_dark">#4F7F52</color>
-    <color name="app_primary_soft">#DCEEDC</color>
-    <color name="app_accent">#F4A261</color>
+    <color name="app_primary">#359477</color>
+    <color name="app_primary_dark">#1F6A55</color>
+    <color name="app_primary_soft">#9ED8C1</color>
+    <color name="app_accent">#FDDAA8</color>
+    <color name="app_support_blue">#94CAFC</color>
 
-    <color name="text_primary">#26332A</color>
-    <color name="text_secondary">#6B756D</color>
+    <color name="text_primary">#1F2229</color>
+    <color name="text_secondary">#707783</color>
     <color name="text_on_primary">#FFFFFF</color>
 
     <color name="status_red">#D95555</color>
     <color name="status_yellow">#D9A441</color>
-    <color name="status_green">#4F9D69</color>
-    <color name="swipe_delete">#E57373</color>
-    <color name="swipe_update">#7BAE7F</color>
+    <color name="status_green">#359477</color>
+    <color name="status_red_soft">#FDB6B2</color>
+    <color name="status_yellow_soft">#FEDC8D</color>
+    <color name="status_green_soft">#B8F5C5</color>
+    <color name="swipe_delete">#D95555</color>
+    <color name="swipe_update">#359477</color>
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>

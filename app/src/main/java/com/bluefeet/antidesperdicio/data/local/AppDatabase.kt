@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Food::class],
-    version = 1,
+    entities = [Food::class, FoodType::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -24,7 +24,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "anti_desperdicio.db"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration(false)
+                    .build()
 
                 INSTANCE = instance
                 instance

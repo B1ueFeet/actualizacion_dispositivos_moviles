@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -16,7 +17,7 @@ import com.bluefeet.antidesperdicio.R
 class ExpirationAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val foodName = intent.getStringExtra(EXTRA_FOOD_NAME) ?: "Un alimento"
+        val foodName = intent.getStringExtra(EXTRA_FOOD_NAME) ?: "Un producto"
 
         createNotificationChannel(context)
         showNotification(context, foodName)
@@ -29,7 +30,7 @@ class ExpirationAlarmReceiver : BroadcastReceiver() {
                 "Alertas de caducidad",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Notificaciones para alimentos próximos a vencer"
+                description = "Notificaciones para productos proximos a vencer"
             }
 
             val notificationManager = context.getSystemService(NotificationManager::class.java)
@@ -48,10 +49,16 @@ class ExpirationAlarmReceiver : BroadcastReceiver() {
             return
         }
 
+        val largeIcon = BitmapFactory.decodeResource(
+            context.resources,
+            R.drawable.freshguard_icon
+        )
+
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_freshguard_notification)
+            .setLargeIcon(largeIcon)
             .setContentTitle("Producto por vencer")
-            .setContentText("¡Ponte Once\n$foodName vence mañana")
+            .setContentText("FreshGuard: $foodName vence manana")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()

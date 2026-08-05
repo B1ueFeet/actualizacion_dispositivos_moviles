@@ -1,30 +1,28 @@
 package com.bluefeet.antidesperdicio.ui.food
 
+import android.graphics.Canvas
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluefeet.antidesperdicio.R
 import com.bluefeet.antidesperdicio.data.local.AppDatabase
+import com.bluefeet.antidesperdicio.data.local.Food
+import com.bluefeet.antidesperdicio.data.local.FoodWithType
 import com.bluefeet.antidesperdicio.data.repository.FoodRepository
 import com.bluefeet.antidesperdicio.databinding.FragmentFoodListBinding
-
-import androidx.navigation.fragment.findNavController
-import com.bluefeet.antidesperdicio.R
-
-import android.graphics.Canvas
-import android.graphics.drawable.ColorDrawable
-import androidx.core.content.ContextCompat
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
-//test
 import com.bluefeet.antidesperdicio.notification.ExpirationAlarmScheduler
-
-import com.bluefeet.antidesperdicio.data.local.Food
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 class FoodListFragment : Fragment() {
 
@@ -33,8 +31,7 @@ class FoodListFragment : Fragment() {
 
     private lateinit var viewModel: FoodViewModel
     private val foodAdapter = FoodAdapter()
-
-    private var currentFoods: List<Food> = emptyList()
+    private var currentFoods: List<FoodWithType> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,11 +48,8 @@ class FoodListFragment : Fragment() {
         setupViewModel()
         setupRecyclerView()
         observeFoods()
-        setupSwipeToDelete()
-
+        setupSwipeActions()
         setupClickListeners()
-
-        //test
         setupDebugButton()
     }
 
@@ -65,6 +59,7 @@ class FoodListFragment : Fragment() {
         val factory = FoodViewModelFactory(repository)
 
         viewModel = ViewModelProvider(this, factory)[FoodViewModel::class.java]
+        viewModel.seedDefaultTypes()
     }
 
     private fun setupRecyclerView() {
@@ -76,6 +71,7 @@ class FoodListFragment : Fragment() {
         viewModel.foods.observe(viewLifecycleOwner) { foods ->
             currentFoods = foods
             foodAdapter.submitList(foods)
+            updateSummary(foods)
             binding.emptyTextView.visibility = if (foods.isEmpty()) {
                 View.VISIBLE
             } else {
@@ -84,7 +80,44 @@ class FoodListFragment : Fragment() {
         }
     }
 
-    private fun setupSwipeToDelete() {
+    private fun updateSummary(foods: List<FoodWithType>) {
+        var freshCount = 0
+        var warningCount = 0
+        var criticalCount = 0
+
+        foods.forEach { foodWithType ->
+            when (calculateDaysLeft(foodWithType.food.expirationDate)) {
+                in Long.MIN_VALUE..1L -> criticalCount++
+                in 2L..7L -> warningCount++
+                else -> freshCount++
+            }
+        }
+
+        binding.freshCountTextView.text = freshCount.toString()
+        binding.warningCountTextView.text = warningCount.toString()
+        binding.criticalCountTextView.text = criticalCount.toString()
+    }
+
+    private fun calculateDaysLeft(expirationDate: Long): Long {
+        val today = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+
+        val expiration = Calendar.getInstance().apply {
+            timeInMillis = expirationDate
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+
+        val diff = expiration.timeInMillis - today.timeInMillis
+        return TimeUnit.MILLISECONDS.toDays(diff)
+    }
+    private fun setupSwipeActions() {
         val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)
         val updateIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_update)
         val deleteBackground = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.swipe_delete))
@@ -112,17 +145,7 @@ class FoodListFragment : Fragment() {
 
                 if (direction == ItemTouchHelper.RIGHT) {
                     foodAdapter.notifyItemChanged(position)
-
-                    val bundle = Bundle().apply {
-                        putInt("food_id", food.id)
-                        putString("food_name", food.name)
-                        putLong("food_expiration_date", food.expirationDate)
-                    }
-
-                    findNavController().navigate(
-                        R.id.action_foodListFragment_to_addFoodFragment,
-                        bundle
-                    )
+                    navigateToEditFood(food)
                 } else {
                     foodAdapter.notifyItemChanged(position)
                     showDeleteConfirmationDialog(food)
@@ -200,10 +223,26 @@ class FoodListFragment : Fragment() {
         ItemTouchHelper(callback).attachToRecyclerView(binding.foodRecyclerView)
     }
 
+    private fun navigateToEditFood(food: Food) {
+        val bundle = Bundle().apply {
+            putInt("food_id", food.id)
+            putString("food_name", food.name)
+            putLong("food_expiration_date", food.expirationDate)
+            putDouble("food_quantity", food.quantity)
+            putString("food_unit", food.unit)
+            putInt("food_type_id", food.typeId)
+        }
+
+        findNavController().navigate(
+            R.id.action_foodListFragment_to_addFoodFragment,
+            bundle
+        )
+    }
+
     private fun showDeleteConfirmationDialog(food: Food) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Eliminar producto")
-            .setMessage("¿Seguro que quieres eliminar ${food.name}?")
+            .setMessage("Seguro que quieres eliminar ${food.name}?")
             .setNegativeButton("Cancelar", null)
             .setPositiveButton("Eliminar") { _, _ ->
                 ExpirationAlarmScheduler(requireContext()).cancel(food)
@@ -218,23 +257,17 @@ class FoodListFragment : Fragment() {
         }
     }
 
+    private fun setupDebugButton() {
+        binding.debugAlarmButton.setOnClickListener {
+            val food = currentFoods.randomOrNull()?.food
+            val foodName = food?.name ?: "producto de prueba"
+            ExpirationAlarmScheduler(requireContext()).scheduleDebug(foodName)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-    //test
-    private fun setupDebugButton() {
-        binding.debugAlarmButton.setOnClickListener {
-            val food = currentFoods.randomOrNull()
-
-            if (food == null) {
-                ExpirationAlarmScheduler(requireContext()).scheduleDebug("producto de prueba")
-            } else {
-                ExpirationAlarmScheduler(requireContext()).scheduleDebug(food.name)
-            }
-        }
-    }
 }
-
 
