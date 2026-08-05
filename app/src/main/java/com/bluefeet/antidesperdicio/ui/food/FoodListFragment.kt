@@ -103,10 +103,15 @@ class FoodListFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val food = foodAdapter.getFoodAt(viewHolder.adapterPosition)
+                val position = viewHolder.bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) {
+                    return
+                }
+
+                val food = foodAdapter.getFoodAt(position)
 
                 if (direction == ItemTouchHelper.RIGHT) {
-                    foodAdapter.notifyItemChanged(viewHolder.adapterPosition)
+                    foodAdapter.notifyItemChanged(position)
 
                     val bundle = Bundle().apply {
                         putInt("food_id", food.id)
@@ -119,7 +124,7 @@ class FoodListFragment : Fragment() {
                         bundle
                     )
                 } else {
-                    foodAdapter.notifyItemChanged(viewHolder.adapterPosition)
+                    foodAdapter.notifyItemChanged(position)
                     showDeleteConfirmationDialog(food)
                 }
             }
@@ -231,3 +236,5 @@ class FoodListFragment : Fragment() {
         }
     }
 }
+
+
