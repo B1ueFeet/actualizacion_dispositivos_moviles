@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/foodListFragment">
+
+    <fragment
+        android:id="@+id/foodListFragment"
+        android:name="com.bluefeet.antidesperdicio.ui.food.FoodListFragment"
+        android:label="Lista de alimentos">
+
+        <action
+            android:id="@+id/action_foodListFragment_to_addFoodFragment"
+            app:destination="@id/addFoodFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addFoodFragment"
+        android:name="com.bluefeet.antidesperdicio.ui.add.AddFoodFragment"
+        android:label="Agregar alimento" />
+
+</navigation>

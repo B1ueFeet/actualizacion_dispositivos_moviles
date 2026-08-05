@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_background">#1F261F</color>
+    <color name="app_surface">#2B332B</color>
+    <color name="app_surface_soft">#354036</color>
+
+    <color name="app_primary">#A8D8A8</color>
+    <color name="app_primary_dark">#CDEBCD</color>
+    <color name="app_primary_soft">#3E513F</color>
+    <color name="app_accent">#F6B982</color>
+
+    <color name="text_primary">#F3F7F0</color>
+    <color name="text_secondary">#C6D0C3</color>
+    <color name="text_on_primary">#1F261F</color>
+
+    <color name="status_red">#FF8A80</color>
+    <color name="status_yellow">#FFD166</color>
+    <color name="status_green">#9AD6A0</color>
+    <color name="swipe_delete">#D95555</color>
+    <color name="swipe_update">#6BAF75</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+</resources>
