@@ -17,7 +17,7 @@ import com.bluefeet.antidesperdicio.R
 class ExpirationAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val foodName = intent.getStringExtra(EXTRA_FOOD_NAME) ?: "Un producto"
+        val foodName = intent.getStringExtra(EXTRA_FOOD_NAME) ?: context.getString(R.string.notification_food_fallback)
 
         createNotificationChannel(context)
         showNotification(context, foodName)
@@ -27,10 +27,10 @@ class ExpirationAlarmReceiver : BroadcastReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Alertas de caducidad",
+                context.getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Notificaciones para productos proximos a vencer"
+                description = context.getString(R.string.notification_channel_description)
             }
 
             val notificationManager = context.getSystemService(NotificationManager::class.java)
@@ -57,8 +57,8 @@ class ExpirationAlarmReceiver : BroadcastReceiver() {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_freshguard_notification)
             .setLargeIcon(largeIcon)
-            .setContentTitle("Producto por vencer")
-            .setContentText("FreshGuard: $foodName vence manana")
+            .setContentTitle(context.getString(R.string.notification_title))
+            .setContentText(context.getString(R.string.notification_message, foodName))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()
@@ -74,3 +74,4 @@ class ExpirationAlarmReceiver : BroadcastReceiver() {
         const val EXTRA_FOOD_NAME = "extra_food_name"
     }
 }
+

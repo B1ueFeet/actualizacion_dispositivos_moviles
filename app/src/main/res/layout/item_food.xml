@@ -19,7 +19,7 @@
             android:id="@+id/foodNameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Leche"
+            android:text="@string/sample_food_name"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -36,7 +36,7 @@
             android:paddingTop="4dp"
             android:paddingEnd="10dp"
             android:paddingBottom="4dp"
-            android:text="Vence pronto"
+            android:text="@string/sample_status"
             android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Fecha de caducidad: 10/08/2026"
+            android:text="@string/sample_expiration"
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,3 +57,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>
+

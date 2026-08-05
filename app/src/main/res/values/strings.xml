@@ -1,3 +1,58 @@
 <resources>
     <string name="app_name">FreshGuard</string>
+    <string name="loading">Cargando...</string>
+
+    <string name="home_title">FreshGuard</string>
+    <string name="add_symbol">+</string>
+    <string name="summary_fresh">Frescos</string>
+    <string name="summary_warning">Cuidado</string>
+    <string name="summary_urgent">Urgentes</string>
+    <string name="empty_foods">Aun no tienes alimentos registrados</string>
+    <string name="debug_notification_button">Probar notificacion</string>
+
+    <string name="add_food_title">Agregar producto</string>
+    <string name="edit_food_title">Actualizar producto</string>
+    <string name="food_name_hint">Nombre del producto</string>
+    <string name="quantity_hint">Cantidad</string>
+    <string name="unit_label">Unidad</string>
+    <string name="food_type_label">Tipo de producto</string>
+    <string name="expiration_date_hint">Fecha de caducidad</string>
+    <string name="save_button">Guardar</string>
+    <string name="update_button">Actualizar</string>
+    <string name="cancel_button">Cancelar</string>
+
+    <string name="error_food_name_required">Ingresa el nombre</string>
+    <string name="error_quantity_required">Ingresa una cantidad valida</string>
+    <string name="error_type_required">Selecciona un tipo</string>
+    <string name="error_date_required">Selecciona una fecha</string>
+    <string name="food_saved">Alimento guardado</string>
+    <string name="food_updated">Alimento actualizado</string>
+
+    <string name="delete_food_title">Eliminar producto</string>
+    <string name="delete_food_message">Seguro que quieres eliminar %1$s?</string>
+    <string name="delete_button">Eliminar</string>
+    <string name="debug_food_fallback">producto de prueba</string>
+
+    <string name="status_expired">Vencido</string>
+    <string name="status_today">Vence hoy</string>
+    <string name="status_tomorrow">Vence manana</string>
+    <string name="status_days_left">Vence en %1$d dias</string>
+    <string name="food_detail_format">%1$s %2$s - %3$s - Caduca: %4$s</string>
+    <string name="sample_food_name">Leche</string>
+    <string name="sample_status">Vence pronto</string>
+    <string name="sample_expiration">Fecha de caducidad: 10/08/2026</string>
+
+    <string name="notification_food_fallback">Un producto</string>
+    <string name="notification_channel_name">Alertas de caducidad</string>
+    <string name="notification_channel_description">Notificaciones para productos proximos a vencer</string>
+    <string name="notification_title">Producto por vencer</string>
+    <string name="notification_message">FreshGuard: %1$s vence manana</string>
+
+    <string-array name="food_units">
+        <item>unidades</item>
+        <item>kg</item>
+        <item>g</item>
+        <item>litros</item>
+        <item>ml</item>
+    </string-array>
 </resources>

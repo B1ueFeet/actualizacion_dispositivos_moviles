@@ -10,7 +10,7 @@
         android:id="@+id/titleTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="FreshGuard"
+        android:text="@string/home_title"
         android:textColor="@color/text_primary"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -22,7 +22,7 @@
         android:id="@+id/addFoodButton"
         android:layout_width="52dp"
         android:layout_height="52dp"
-        android:text="+"
+        android:text="@string/add_symbol"
         android:textSize="24sp"
         app:backgroundTint="@color/app_primary"
         app:cornerRadius="26dp"
@@ -70,7 +70,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Frescos"
+                    android:text="@string/summary_fresh"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -106,7 +106,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cuidado"
+                    android:text="@string/summary_warning"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -142,7 +142,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Urgentes"
+                    android:text="@string/summary_urgent"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -153,7 +153,7 @@
         android:id="@+id/emptyTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Aun no tienes alimentos registrados"
+        android:text="@string/empty_foods"
         android:textAlignment="center"
         android:textColor="@color/text_secondary"
         android:textSize="16sp"
@@ -178,7 +178,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Probar notificacion"
+        android:text="@string/debug_notification_button"
         android:textColor="@color/app_primary_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -186,5 +186,6 @@
         app:strokeColor="@color/app_primary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 

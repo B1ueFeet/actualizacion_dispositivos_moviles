@@ -241,10 +241,10 @@ class FoodListFragment : Fragment() {
 
     private fun showDeleteConfirmationDialog(food: Food) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Eliminar producto")
-            .setMessage("Seguro que quieres eliminar ${food.name}?")
-            .setNegativeButton("Cancelar", null)
-            .setPositiveButton("Eliminar") { _, _ ->
+            .setTitle(getString(R.string.delete_food_title))
+            .setMessage(getString(R.string.delete_food_message, food.name))
+            .setNegativeButton(getString(R.string.cancel_button), null)
+            .setPositiveButton(getString(R.string.delete_button)) { _, _ ->
                 ExpirationAlarmScheduler(requireContext()).cancel(food)
                 viewModel.deleteFood(food)
             }
@@ -260,7 +260,7 @@ class FoodListFragment : Fragment() {
     private fun setupDebugButton() {
         binding.debugAlarmButton.setOnClickListener {
             val food = currentFoods.randomOrNull()?.food
-            val foodName = food?.name ?: "producto de prueba"
+            val foodName = food?.name ?: getString(R.string.debug_food_fallback)
             ExpirationAlarmScheduler(requireContext()).scheduleDebug(foodName)
         }
     }
@@ -270,4 +270,5 @@ class FoodListFragment : Fragment() {
         _binding = null
     }
 }
+
 

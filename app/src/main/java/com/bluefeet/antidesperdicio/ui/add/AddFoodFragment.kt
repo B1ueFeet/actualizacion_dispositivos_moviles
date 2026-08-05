@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bluefeet.antidesperdicio.R
 import com.bluefeet.antidesperdicio.data.local.AppDatabase
 import com.bluefeet.antidesperdicio.data.local.Food
 import com.bluefeet.antidesperdicio.data.local.FoodType
@@ -34,7 +35,8 @@ class AddFoodFragment : Fragment() {
     private var pendingTypeSelectionId: Int? = null
     private var foodTypes: List<FoodType> = emptyList()
 
-    private val unitOptions = listOf("unidades", "kg", "g", "litros", "ml")
+    private val unitOptions: List<String>
+        get() = resources.getStringArray(R.array.food_units).toList()
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     override fun onCreateView(
@@ -127,11 +129,11 @@ class AddFoodFragment : Fragment() {
         pendingTypeSelectionId = typeId
         selectedExpirationDate = expirationDate
 
-        binding.titleTextView.text = "Actualizar producto"
+        binding.titleTextView.text = getString(R.string.edit_food_title)
         binding.nameEditText.setText(foodName)
         binding.quantityEditText.setText(formatQuantity(quantity))
         binding.dateEditText.setText(dateFormatter.format(expirationDate))
-        binding.saveFoodButton.text = "Actualizar"
+        binding.saveFoodButton.text = getString(R.string.update_button)
 
         val unitIndex = unitOptions.indexOf(unit)
         if (unitIndex >= 0) {
@@ -169,26 +171,26 @@ class AddFoodFragment : Fragment() {
         val unit = unitOptions.getOrNull(binding.unitSpinner.selectedItemPosition).orEmpty()
 
         if (name.isBlank()) {
-            binding.nameInputLayout.error = "Ingresa el nombre"
+            binding.nameInputLayout.error = getString(R.string.error_food_name_required)
             return
         } else {
             binding.nameInputLayout.error = null
         }
 
         if (quantity == null || quantity <= 0.0) {
-            binding.quantityInputLayout.error = "Ingresa una cantidad valida"
+            binding.quantityInputLayout.error = getString(R.string.error_quantity_required)
             return
         } else {
             binding.quantityInputLayout.error = null
         }
 
         if (selectedType == null) {
-            Toast.makeText(requireContext(), "Selecciona un tipo", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.error_type_required), Toast.LENGTH_SHORT).show()
             return
         }
 
         if (expirationDate == null) {
-            binding.dateInputLayout.error = "Selecciona una fecha"
+            binding.dateInputLayout.error = getString(R.string.error_date_required)
             return
         } else {
             binding.dateInputLayout.error = null
@@ -207,7 +209,7 @@ class AddFoodFragment : Fragment() {
 
             viewModel.addFood(food) { savedFood ->
                 ExpirationAlarmScheduler(requireContext()).schedule(savedFood)
-                Toast.makeText(requireContext(), "Alimento guardado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.food_saved), Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             }
         } else {
@@ -224,7 +226,7 @@ class AddFoodFragment : Fragment() {
 
             viewModel.updateFood(food) { updatedFood ->
                 ExpirationAlarmScheduler(requireContext()).schedule(updatedFood)
-                Toast.makeText(requireContext(), "Alimento actualizado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.food_updated), Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             }
         }
@@ -243,3 +245,5 @@ class AddFoodFragment : Fragment() {
         _binding = null
     }
 }
+
+

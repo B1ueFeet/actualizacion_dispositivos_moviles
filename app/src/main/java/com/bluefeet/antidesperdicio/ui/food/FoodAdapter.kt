@@ -54,8 +54,13 @@ class FoodAdapter : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
             val color = getStatusColor(daysLeft)
 
             binding.foodNameTextView.text = food.name
-            binding.expirationTextView.text =
-                "${formatQuantity(food.quantity)} ${food.unit} · ${foodWithType.type.name} · Caduca: ${formatDate(food.expirationDate)}"
+            binding.expirationTextView.text = binding.root.context.getString(
+                R.string.food_detail_format,
+                formatQuantity(food.quantity),
+                food.unit,
+                foodWithType.type.name,
+                formatDate(food.expirationDate)
+            )
             binding.statusTextView.text = status
             binding.statusTextView.setTextColor(color)
             binding.foodCardView.strokeColor = color
@@ -83,10 +88,10 @@ class FoodAdapter : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
         private fun getStatus(daysLeft: Long): String {
             return when {
-                daysLeft < 0 -> "Vencido"
-                daysLeft == 0L -> "Vence hoy"
-                daysLeft == 1L -> "Vence manana"
-                else -> "Vence en $daysLeft dias"
+                daysLeft < 0 -> binding.root.context.getString(R.string.status_expired)
+                daysLeft == 0L -> binding.root.context.getString(R.string.status_today)
+                daysLeft == 1L -> binding.root.context.getString(R.string.status_tomorrow)
+                else -> binding.root.context.getString(R.string.status_days_left, daysLeft)
             }
         }
 
@@ -114,3 +119,4 @@ class FoodAdapter : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
         }
     }
 }
+

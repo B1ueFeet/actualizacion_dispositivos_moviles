@@ -15,7 +15,7 @@
             android:id="@+id/titleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Agregar producto"
+            android:text="@string/add_food_title"
             android:textColor="@color/text_primary"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:hint="Nombre del producto"
+            android:hint="@string/food_name_hint"
             app:boxBackgroundColor="@color/app_surface"
             app:boxStrokeColor="@color/app_primary"
             app:hintTextColor="@color/app_primary_dark"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:hint="Cantidad"
+            android:hint="@string/quantity_hint"
             app:boxBackgroundColor="@color/app_surface"
             app:boxStrokeColor="@color/app_primary"
             app:hintTextColor="@color/app_primary_dark"
@@ -85,7 +85,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Unidad"
+                android:text="@string/unit_label"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -101,7 +101,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Tipo de producto"
+            android:text="@string/food_type_label"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -124,7 +124,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Fecha de caducidad"
+            android:hint="@string/expiration_date_hint"
             app:boxBackgroundColor="@color/app_surface"
             app:boxStrokeColor="@color/app_primary"
             app:endIconDrawable="@android:drawable/ic_menu_my_calendar"
@@ -150,7 +150,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Guardar"
+            android:text="@string/save_button"
             app:backgroundTint="@color/app_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -162,7 +162,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Cancelar"
+            android:text="@string/cancel_button"
             android:textColor="@color/app_primary_dark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -171,3 +171,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
+
